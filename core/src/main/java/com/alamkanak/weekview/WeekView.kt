@@ -1531,10 +1531,10 @@ class WeekView @JvmOverloads constructor(
             val candidates = eventChipsCache.allEventChips.filter { it.isHit(x, y) }
             return when {
                 candidates.isEmpty() -> null
-                // Two events hit. This is most likely because an all-day event was clicked, but a
-                // single event is rendered underneath it. We return the all-day event.
-                candidates.size == 2 -> candidates.first { it.event.isAllDay }.takeUnless { it.isHidden }
-                else -> candidates.first().takeUnless { it.isHidden }
+                // When two events are hit, try to return the all-day event if it exists
+                candidates.size == 2 -> candidates.firstOrNull { it.event.isAllDay }?.takeUnless { it.isHidden }
+                // Return the first candidate, or null if it is hidden
+                else -> candidates.firstOrNull()?.takeUnless { it.isHidden }
             }
         }
 
